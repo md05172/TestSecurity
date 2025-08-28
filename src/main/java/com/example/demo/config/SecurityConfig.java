@@ -4,7 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration // Spring에게 이 클래스는 설정 파일이며, 내부의 @Bean 메서드들을 Bean으로 등록하라고 알림
@@ -37,9 +41,39 @@ public class SecurityConfig {
 															// Spring Security가 이 경로로 요청이 오면 인증을 수행한다.
 						.permitAll());
 		
-		http
-				.csrf((auth) -> auth.disable());
+//		http
+//				.csrf((auth) -> auth.disable());
 		
+		http
+				.sessionManagement((auth) -> auth
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(true));
+		
+		http
+				.sessionManagement((auth) -> auth
+//						.sessionFixation().none()	// 로그인 시 세션 정보 변경 안함
+//						.sessionFixation().newSession()	// 로그인 시 세션 새로 생성	
+						.sessionFixation().changeSessionId());	// 로그인 시 동일한 세션에 대한 id 변경
+						
 		return http.build();
 	}
+	
+//	InMemory방식 유저 정보를 저장하고 로그인을 하고싶을때
+//	@Bean
+//    public UserDetailsService userDetailsService() {
+//
+//        UserDetails user1 = User.builder()
+//                .username("user1")
+//                .password(bCryptPasswordEncoder().encode("1234"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails user2 = User.builder()
+//                .username("user2")
+//                .password(bCryptPasswordEncoder().encode("1234"))
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user1, user2);
+//    }
 }
