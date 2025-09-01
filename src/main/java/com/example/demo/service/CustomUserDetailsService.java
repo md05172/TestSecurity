@@ -9,7 +9,7 @@ import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 
-@Service
+//@Service
 public class CustomUserDetailsService implements UserDetailsService{
 
 	private UserRepository userRepository;
